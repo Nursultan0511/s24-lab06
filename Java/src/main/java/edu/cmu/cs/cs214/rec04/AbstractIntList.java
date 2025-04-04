@@ -1,74 +1,68 @@
 package edu.cmu.cs.cs214.rec04;
 
-/**
- * AbstractIntList -- a list of integers.
- *
- * @author Nora Shoemaker
- *
- */
-public abstract class AbstractIntList implements IntegerList {
+import java.util.ArrayList;
+import java.util.List;
 
-    /**
-     * Adds the specified int to the list.
-     *
-     * @param num an integer to be added to the list
-     * @return true if the list is changed as a result of the call
-     */
-    public abstract boolean add(int num);
+public class AbstractIntList extends SortedIntList{
 
-    /**
-     * Adds all of the elements of the IntegerList to the list.
-     * Calls add() on each element of list. Can be overwritten
-     * for more specific behavior.
-     *
-     * @param list IntegerList containing elements to be added to the list
-     * @return true if the list changed as a result of the call
-     */
-    public boolean addAll(IntegerList list) {
+    private List<Integer> elements;
 
-        boolean success = false;
-
-        for (int i = 0; i < list.size(); i++)
-        {
-            success |= this.add(list.get(i));
-        }
-
-        return success;
+    public AbstractIntList() {
+        elements = new ArrayList<>();
     }
 
-    /**
-     * Returns the integer at the specified position in this list.
-     *
-     * @param index index of the element to return
-     * @return the element at the specified position in this list
-     */
-    public abstract int get(int index);
+    @Override
+    public boolean add(int num) {
+        elements.add(num);
+        return true;
+    }
 
-    /**
-     * Removes the first occurrence of the specified element from the list,
-     * if it is present (optional operation).
-     *
-     * @param num an integer to be removed from the list, if present
-     * @return true if an element was removed as a result of this call
-     */
-    public abstract boolean remove(int num);
+    @Override
+    public int get(int index) {
+        if (index < 0 || index >= elements.size()) {
+            throw new IndexOutOfBoundsException("Indexiin hyazgaar hetersen bn.");
+        }
+        return elements.get(index);
+    }
 
-    /**
-     * Removes from the list all of its elements that are contained in the
-     * specified IntegerList.
-     *
-     * @param list IntegerList containing elements to be removed from
-     * the list
-     * @return true if the list changed as a result of the call
-     */
-    public abstract boolean removeAll(IntegerList list);
+    @Override
+    public boolean remove(int num) {
+        return elements.remove((Integer) num);
+    }
 
-    /**
-     * Returns the number of elements in this list. If this list contains
-     * more than Integer.MAX_VALUE elements, returns Integer.MAX_VALUE.
-     *
-     * @return number of elements in the list
-     */
-    public abstract int size();
+    @Override
+    public boolean removeAll(IntegerList list) {
+        boolean changed = false;
+        for (int i = 0; i < list.size(); i++) {
+            while (elements.remove((Integer) list.get(i))) {
+                changed = true;
+            }
+        }
+        return changed;
+    }
 
+    @Override
+    public int size() {
+        return elements.size();
+    }
+
+    @Override
+    public String toString() {
+        return elements.toString();
+    }
+
+    public static void main(String[] args) {
+        AbstractIntList list = new AbstractIntList();
+        list.add(10);
+        list.add(20);
+        list.add(30);
+        System.out.println("Anhni jagsaalt: " + list);
+
+        AbstractIntList removeList = new AbstractIntList();
+        removeList.add(20);
+        removeList.add(40);
+
+        list.removeAll(removeList);
+        System.out.println("Ustgasinii daraah jagsaalt: " + list);
+    }
 }
